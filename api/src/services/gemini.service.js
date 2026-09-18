@@ -1,23 +1,31 @@
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_KEY
-})
+const apiKey = process.env.GEMINI_API_KEY;
+
+console.log("Chave Gemini carregada:", !!apiKey);
+
+if (!apiKey) {
+    throw new Error("GEMINI_API_KEY não encontrada no arquivo .env");
+}
+
+const ai = new GoogleGenAI({
+    apiKey: apiKey
+});
 
 const obterRespostaReceita = async (pergunta) => {
 
     try {
 
-        const completation = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                {
-                    role: "system",
-                    content:
-                        `
+        const response = await ai.models.generateContent({
+            model: "gemini-3.8-flash",
+
+            contents: pergunta,
+
+            config: {
+                systemInstruction: `
 Você é o CookFlow, um assistente culinário especializado em ajudar pessoas iniciantes a preparar receitas de forma simples.
 
 O usuário informará um ingrediente, alimento ou tipo de receita desejada.
@@ -39,26 +47,19 @@ Regras obrigatórias:
 
 Priorize receitas fáceis, saborosas e possíveis de preparar em casa.
 
-Evite explicações complicadas e termos culinários difíceis sem explicar o significado.`
-                },
-                {
-                    role: 'user',
-                    content: pergunta
-                }
+Evite explicações complicadas e termos culinários difíceis sem explicar o significado.
+`
+            }
+        });
 
-            ],
-
-        })
-
-        return completation.choices[0].message.content
-
+        return response.text;
 
     } catch (err) {
-        console.error('Erro ao chamar API OpenAI', err)
-        throw new Error('Erro ao chamar API da OpenAI')
 
+        console.error("Erro ao chamar API Gemini", err);
+
+        throw new Error("Erro ao chamar API do Gemini");
     }
+};
 
-}
-
-export default obterRespostaReceita
+export default obterRespostaReceita;
