@@ -1,12 +1,11 @@
-import Chatreceitas from './pages/Chatreceitas';
-function App () {
+import ChatReceitas from "./pages/ChatReceitas";
 
-return (
+function App() {
+  return (
     <div className="min-h-screen bg-gray-100">
-        <Chatreceitas />
+      <ChatReceitas />
     </div>
-)
-
+  );
 }
 
-export default App
+export default App;
