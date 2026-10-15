@@ -1,12 +1,15 @@
 import express from "express";
 import receitasRoutes from "./src/routes/receitas.route.js";
+import cors from 'cors'
 
 const app = express();
 const PORT = 3001;
 
-app.use(express.json());
+app.use(cors())
 
-app.use("/api/receitas", receitasRoutes);
+app.use(express.json())
+
+app.use("/api/receitas", receitasRoutes)
 
 const server = app.listen(PORT, () => {
     console.log(`Servidor Rodando na Porta ${PORT}`);

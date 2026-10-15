@@ -1,7 +1,7 @@
 import { useState } from "react"
 import ListaMessagens from "../components/ListaMessagens"
 import ChatBox from "../components/ChatBox"
-import {api} from '../services/api'
+import { api } from '../services/api'
 
 const ChatReceitas = () => {
     const [loading, setLoading] = useState(false)
@@ -11,50 +11,48 @@ const ChatReceitas = () => {
             texto: "Olá! Eu sou o CooKflow, seu assistente de receitas. Como posso ajudá-lo hoje?",
             remetente: 'bot'
         },
-        {
-
-            id: 2,
-            texto: "frango assado",
-            remetente: 'usuario'
-        },
-
-        {
-
-            id: 3,
-            texto: `### Frango Assado 
-              
-          Essa receita de frango assado é simples e deliciosa! Aqui está como você pode prepará-la:
-         
-          ### Ingredientes:
-          
-          - 1 frango inteiro (aproximadamente 1,5 kg)
-          - 4 dentes de alho picados
-          - 2 colheres de sopa de azeite de oliva
-          - 1 colher de chá de páprica
-          - 1 colher de chá de ervas finas (como tomilho, alecrim ou orégano)
-          - 1 colher de chá de sal
-          - 1/2 colher de chá de pimenta-do-reino                  
-         `,
-            remetente: 'bot'
-        },
 
     ])
 
-   const onEnviarMensagem = async (mensagem) => {
-      
-      try {
-           const resposta = await api(mensagem)
+    const onEnviarMensagem = async (mensagem) => {
+        const novaMensagemUsuario = {
 
-           console.log(resposta)
+            id: Date.now(),
+            texto: mensagem,
+            remetente: "usuario",
+        }
+
+        setMensagens(prev => [...prev, novaMensagemUsuario])
+        setLoading(true)
+
+        try {
+            const resposta = await api(mensagem)
+
+            const novaMensagemBot = {
+                id: Date.now() + 1,
+                texto: resposta,
+                remetente: "bot",
+            }
+
+            setMensagens(prev => [...prev, novaMensagemBot])
+
+        } catch (err) {
+            console.error(err)
+            const novaMensagem = {
+                id: Date.now(),
+                texto: "Falha ao enviar, tente novamente.",
+                remetente: "bot",
+            }
+
+            setMensagens(prev => [...prev, novaMensagemUsuario])
+
+        } finally {
+            setLoading(false)
 
 
-       }catch (err) {
-         console.error(err)
+        }
 
-
-       }
-
-   }
+    }
 
 
     return (
@@ -64,18 +62,18 @@ const ChatReceitas = () => {
                 <header className="text-center mb-8">
 
                     <h1 className="text-5xl font-bold mb-2 flex items-center justify-center gap-3">
-  <span className="text-5xl leading-none">🥘</span>
-  <span className="bg-linear-to-r from-purple-600 to-emerald-600 text-transparent bg-clip-text">
-    CooKflow
-  </span>
-</h1>
+                        <span className="text-5xl leading-none">🥘</span>
+                        <span className="bg-linear-to-r from-purple-600 to-emerald-600 text-transparent bg-clip-text">
+                            CooKflow
+                        </span>
+                    </h1>
                     <p className="text-gray-600 text-lg">Seu assistente de receitas favorito!</p>
                 </header>
 
                 <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl h-150 border border-gray-100 flex flex-col">
 
-                    <ListaMessagens mensagens={mensagens}/>
-                    <ChatBox onEnviarMensagem={onEnviarMensagem}   desabilitado={loading}/>
+                    <ListaMessagens mensagens={mensagens} loading={loading} />
+                    <ChatBox onEnviarMensagem={onEnviarMensagem} desabilitado={loading} />
 
                 </div>
 

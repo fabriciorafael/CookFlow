@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL
 export const api = async (pergunta) => {
 
     try {
-            const response = await axios.post(`${API_URL} receitas/perguntar`, {
+            const response = await axios.post(`${API_URL}/receitas/perguntar`, {
                 pergunta
             })
             
@@ -14,7 +14,7 @@ export const api = async (pergunta) => {
 
     } catch (err) {
         console.error('Erro ao buscar resposta no servidor', err)
-        throw error
+        throw err
 
     }
 

@@ -1,5 +1,5 @@
 import Mensagem from "./Mensagem"
-const ListaMessagens = ({ mensagens }) => {
+const ListaMessagens = ({ mensagens, loading }) => {
 
 
 
@@ -8,6 +8,22 @@ const ListaMessagens = ({ mensagens }) => {
             {mensagens.map((mensagem) => (
                 <Mensagem key={mensagem.id} mensagem={mensagem} />
             ))}
+
+            {loading && (
+                <div className="flex justify-start">
+                    <div className="bg-gray-50 rounded-2xl rounder-bl-none shadow-md border-gray-200">
+                        <div className="flex space-x-2">
+                            <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+                            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse delay-100"></div>
+                            <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse delay-200"></div>
+                        </div>
+                    </div>
+                </div>
+
+            )}
+
+
+          <div> </div>  
 
         </div>
 
